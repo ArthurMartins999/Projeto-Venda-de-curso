@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Seu Curso | Página de Venda</title>
+  <style>
+    :root{
+      --bg:#0b0b10; --card:#12121a; --muted:#a8a8b3; --text:#f4f4f7;
+      --brand:#ff6a00; --brand2:#ff9a3d; --stroke:#232335;
+      --shadow:0 18px 60px rgba(0,0,0,.45); --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--text);
+      background:
+        radial-gradient(900px 420px at 20% -10%, rgba(255,106,0,.22), transparent 55%),
+        radial-gradient(900px 420px at 90% 10%, rgba(255,154,61,.16), transparent 50%),
+        var(--bg);
+    }
+    .wrap{max-width:1100px;margin:0 auto;padding:24px}
+    .nav{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:14px 18px;border:1px solid var(--stroke);
+      background:rgba(18,18,26,.55);backdrop-filter: blur(10px);
+      border-radius:999px; position:sticky; top:14px; z-index:10;
+    }
+    .logo{display:flex;gap:10px;align-items:center;font-weight:900}
+    .dot{width:10px;height:10px;border-radius:50%;
+      background:linear-gradient(135deg,var(--brand),var(--brand2));
+      box-shadow:0 0 0 6px rgba(255,106,0,.12);
+    }
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:10px;
+      padding:12px 16px;border-radius:999px;border:none;
+      background:linear-gradient(135deg, var(--brand), var(--brand2));
+      color:#111;font-weight:900; cursor:pointer;
+      box-shadow:0 16px 50px rgba(255,106,0,.24);
+      text-decoration:none;
+    }
+    .hero{
+      margin-top:24px;
+      display:grid; grid-template-columns:1.2fr .8fr; gap:18px;
+    }
+    .card{
+      border:1px solid var(--stroke);
+      background:rgba(18,18,26,.55);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:20px;
+    }
+    h1{margin:8px 0 10px; font-size:clamp(28px, 4.6vw, 52px); line-height:1.05}
+    p{color:var(--muted); font-weight:600}
+    .price{font-size:34px; font-weight:900}
+    .muted{color:var(--muted); font-weight:700}
+    ul{margin:10px 0 0; padding-left:18px; color:var(--muted); font-weight:600}
+    .row{display:flex; gap:12px; flex-wrap:wrap; align-items:center}
+    .pill{
+      display:inline-flex; gap:8px; align-items:center;
+      padding:8px 12px; border-radius:999px;
+      border:1px solid rgba(255,106,0,.25);
+      background:rgba(255,106,0,.10);
+      color:var(--muted); font-weight:800; font-size:13px;
+      width:fit-content;
+    }
+    @media (max-width:900px){ .hero{grid-template-columns:1fr} }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="nav">
+      <div class="logo"><span class="dot"></span><span>SeuCursoPRO</span></div>
+      <a class="btn" id="buyBtn" href="#">Comprar agora</a>
+    </header>
+
+    <main class="hero">
+      <section class="card">
+        <div class="pill">⚡ Oferta por tempo limitado (exemplo)</div>
+        <h1>Aprenda <span style="color:var(--brand2)">[TEMA DO CURSO]</span> do zero e comece hoje.</h1>
+        <p>Landing page focada em conversão. Ao clicar em comprar, você vai para o checkout com cadastro e pagamento.</p>
+
+        <div class="row" style="margin-top:14px">
+          <a class="btn" id="buyBtn2" href="#">Quero me inscrever</a>
+          <span class="muted">✅ Acesso imediato • ✅ Garantia 7 dias</span>
+        </div>
+
+        <h3 style="margin-top:18px">O que você vai receber</h3>
+        <ul>
+          <li>+X aulas gravadas</li>
+          <li>Materiais e templates</li>
+          <li>Atualizações incluídas</li>
+        </ul>
+      </section>
+
+      <aside class="card">
+        <div class="muted">De <s>R$ 297</s> por</div>
+        <div class="price">R$ 97</div>
+        <div class="muted">Pix / cartão (quando integrar plataforma)</div>
+        <hr style="border:0;border-top:1px solid var(--stroke);margin:16px 0">
+        <h3>Pra quem é</h3>
+        <ul>
+          <li>Iniciantes</li>
+          <li>Quem quer passo a passo</li>
+          <li>Quem quer resultado</li>
+        </ul>
+      </aside>
+    </main>
+  </div>
+
+  <script>
+    // CONFIG DO PRODUTO (edite aqui)
+    const PRODUCT = {
+      name: "Curso [TEMA]",
+      price: 97.00,
+      offer: "Oferta de lançamento",
+    };
+
+    function goCheckout() {
+      const params = new URLSearchParams({
+        product: PRODUCT.name,
+        price: PRODUCT.price.toFixed(2),
+        offer: PRODUCT.offer
+      });
+      window.location.href = "checkout.html?" + params.toString();
+    }
+
+    document.getElementById("buyBtn").addEventListener("click", (e) => { e.preventDefault(); goCheckout(); });
+    document.getElementById("buyBtn2").addEventListener("click", (e) => { e.preventDefault(); goCheckout(); });
+  </script>
+</body>
+</html>

@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Checkout | Pix + Enviar comprovante</title>
+  <style>
+    :root{
+      --bg:#0b0b10; --card:#12121a; --muted:#a8a8b3; --text:#f4f4f7;
+      --brand:#ff6a00; --brand2:#ff9a3d; --stroke:#232335; --ok:#29d17d;
+      --shadow:0 18px 60px rgba(0,0,0,.45); --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--text);
+      background:
+        radial-gradient(900px 420px at 20% -10%, rgba(255,106,0,.22), transparent 55%),
+        radial-gradient(900px 420px at 90% 10%, rgba(255,154,61,.16), transparent 50%),
+        var(--bg);
+    }
+    a{color:inherit}
+    .wrap{max-width:1100px;margin:0 auto;padding:24px}
+    .top{display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap}
+    .back{
+      color:var(--muted); font-weight:800; text-decoration:none;
+      border:1px solid var(--stroke); padding:10px 14px; border-radius:999px;
+      background:rgba(18,18,26,.45);
+    }
+    .tag{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px; border-radius:999px;
+      border:1px solid rgba(41,209,125,.35);
+      background:rgba(41,209,125,.10);
+      color:var(--muted); font-weight:900; font-size:13px;
+      width:fit-content;
+    }
+    .dot{width:10px;height:10px;border-radius:50%; background:var(--ok); box-shadow:0 0 0 6px rgba(41,209,125,.12);}
+    .grid{margin-top:18px; display:grid; grid-template-columns: 1fr .95fr; gap:16px}
+    .card{
+      border:1px solid var(--stroke);
+      background:rgba(18,18,26,.55);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px;
+    }
+    h1{margin:0; font-size:26px}
+    h2{margin:0 0 10px}
+    label{display:block; font-weight:800; margin:10px 0 6px}
+    input{
+      width:100%; padding:12px 12px; border-radius:12px;
+      border:1px solid var(--stroke);
+      background:rgba(11,11,16,.45);
+      color:var(--text);
+      outline:none;
+    }
+    input:focus{border-color:rgba(255,106,0,.55)}
+    .btn{
+      width:100%;
+      display:inline-flex;align-items:center;justify-content:center;gap:10px;
+      padding:12px 16px;border-radius:14px;border:none;
+      background:linear-gradient(135deg, var(--brand), var(--brand2));
+      color:#111;font-weight:900; cursor:pointer;
+      box-shadow:0 16px 50px rgba(255,106,0,.24);
+      text-decoration:none;
+    }
+    .btn.ghost{
+      background:rgba(18,18,26,.55);
+      color:var(--text);
+      border:1px solid var(--stroke);
+      box-shadow:none;
+    }
+    .muted{color:var(--muted); font-weight:700}
+    .row{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+    .summary{
+      border:1px solid var(--stroke);
+      border-radius:16px;
+      padding:14px;
+      background:rgba(11,11,16,.35);
+    }
+    .price{font-size:30px;font-weight:900;margin-top:6px}
+    .pixBox{
+      margin-top:12px;
+      border:1px solid rgba(255,106,0,.25);
+      background:linear-gradient(180deg, rgba(255,106,0,.12), rgba(11,11,16,.25));
+      border-radius:16px;
+      padding:14px;
+    }
+    .qrWrap{display:flex; gap:14px; align-items:center; flex-wrap:wrap}
+    .qrImg{
+      width:180px;height:180px;border-radius:16px;
+      border:1px solid rgba(255,106,0,.25);
+      background:rgba(11,11,16,.25);
+      display:flex; align-items:center; justify-content:center;
+      overflow:hidden;
+    }
+    .qrImg img{width:100%; height:100%; object-fit:cover}
+    textarea{
+      width:100%; min-height:92px; resize:vertical;
+      padding:12px; border-radius:12px;
+      border:1px solid var(--stroke);
+      background:rgba(11,11,16,.45);
+      color:var(--text);
+      outline:none;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size:12px;
+    }
+    .toast{
+      position:fixed; left:50%; bottom:20px; transform:translateX(-50%);
+      background:rgba(18,18,26,.92);
+      border:1px solid var(--stroke);
+      color:var(--text);
+      padding:10px 14px;
+      border-radius:999px;
+      box-shadow:var(--shadow);
+      display:none;
+      font-weight:900;
+    }
+    @media (max-width:900px){
+      .grid{grid-template-columns:1fr}
+      .row{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <a class="back" href="index.html">← Voltar</a>
+      <div class="tag"><span class="dot"></span> Pagamento via Pix</div>
+    </div>
+
+    <div class="grid">
+      <!-- Cadastro -->
+      <section class="card">
+        <h1>Cadastro</h1>
+        <p class="muted">Preencha seus dados e pague via Pix. Depois envie o comprovante no WhatsApp para liberar o acesso.</p>
+
+        <div class="row">
+          <div>
+            <label for="name">Nome</label>
+            <input id="name" placeholder="Seu nome completo" autocomplete="name" />
+          </div>
+          <div>
+            <label for="cpf">CPF</label>
+            <input id="cpf" placeholder="000.000.000-00" inputmode="numeric" />
+          </div>
+        </div>
+
+        <label for="email">E-mail</label>
+        <input id="email" placeholder="seuemail@email.com" autocomplete="email" />
+
+        <label for="phone">WhatsApp</label>
+        <input id="phone" placeholder="(62) 9XXXX-XXXX" inputmode="tel" autocomplete="tel" />
+
+        <div style="display:grid; gap:10px; margin-top:14px">
+          <button class="btn" id="btnShowPix">Gerar pedido e mostrar Pix</button>
+          <button class="btn ghost" id="btnClear" type="button">Limpar</button>
+        </div>
+
+        <p class="muted" style="margin-top:12px;font-size:13px">
+          *Fluxo manual: você confirma o comprovante e libera o acesso.
+        </p>
+      </section>
+
+      <!-- Resumo + Pagamento -->
+      <aside class="card">
+        <h2>Resumo do pedido</h2>
+
+        <div class="summary">
+          <div class="muted">Produto</div>
+          <div id="productName" style="font-weight:900; font-size:18px; margin-top:4px">—</div>
+
+          <div style="display:flex; justify-content:space-between; gap:10px; margin-top:12px; align-items:end">
+            <div>
+              <div class="muted">Total</div>
+              <div class="price" id="productPrice">R$ —</div>
+            </div>
+            <div style="text-align:right">
+              <div class="muted">Pedido</div>
+              <div style="font-weight:900" id="orderId">—</div>
+            </div>
+          </div>
+
+          <div class="muted" style="margin-top:12px">
+            Status: <span id="status" style="font-weight:900; color:var(--brand2)">Aguardando cadastro</span>
+          </div>
+        </div>
+
+        <div class="pixBox" id="pixArea" style="display:none">
+          <h3 style="margin:0 0 6px">Pagamento via Pix</h3>
+          <p class="muted" style="margin:0 0 10px">
+            Escaneie o QR Code ou copie o código Pix abaixo.
+          </p>
+
+          <div class="qrWrap">
+            <div class="qrImg">
+              <!-- ✅ Coloque seu QR real aqui: salve uma imagem como "qr.png" na mesma pasta -->
+              <img src="qr.png" alt="QR Code Pix (adicione qr.png)" onerror="this.remove(); this.parentElement.innerHTML='Coloque a imagem <b>qr.png</b><br/>na pasta do projeto';" />
+            </div>
+            <div style="flex:1; min-width:240px">
+              <div class="muted" style="font-weight:900">Chave Pix</div>
+              <div id="pixKey" style="font-weight:900; margin-top:4px">—</div>
+              <p class="muted" style="margin:10px 0 0; font-size:13px">
+                Se preferir, use o “copia e cola”.
+              </p>
+            </div>
+          </div>
+
+          <label for="pixCopiaCola">Pix copia e cola</label>
+          <textarea id="pixCopiaCola" readonly></textarea>
+
+          <div style="display:grid; gap:10px; margin-top:10px">
+            <button class="btn" id="btnCopy">Copiar código Pix</button>
+            <a class="btn ghost" id="btnZap" href="#" target="_blank" rel="noreferrer">
+              Envie seu comprovante e receba o acesso ao curso
+            </a>
+          </div>
+
+          <p class="muted" style="margin-top:10px;font-size:13px">
+            Depois de pagar, clique no botão do WhatsApp e mande o comprovante.
+          </p>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">OK</div>
+
+  <script>
+    // ====== CONFIG (edite aqui) ======
+    const SELLER = {
+      whatsappNumber: "55SEUNUMEROAQUI", // exemplo: 5562999999999 (55 + DDD + número)
+      pixKey: "SUA CHAVE PIX AQUI",
+      pixCopyPaste: "COLE AQUI O PIX COPIA E COLA (código completo)",
+    };
+    // Se quiser, você pode deixar pixCopyPaste vazio e usar só a chave.
+    // =================================
+
+    // Puxa produto/preço da URL (vindo do index.html)
+    const qs = new URLSearchParams(location.search);
+    const product = qs.get("product") || "Curso";
+    const price = Number(qs.get("price") || "97.00");
+    const offer = qs.get("offer") || "";
+
+    const $ = (id) => document.getElementById(id);
+    $("productName").textContent = product + (offer ? " — " + offer : "");
+    $("productPrice").textContent = price.toLocaleString("pt-BR", { style:"currency", currency:"BRL" });
+
+    function showToast(text){
+      $("toast").textContent = text;
+      $("toast").style.display = "block";
+      setTimeout(()=> $("toast").style.display = "none", 1600);
+    }
+
+    function onlyDigits(s){ return (s || "").replace(/\D/g, ""); }
+    function validateEmail(email){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email || ""); }
+    function makeOrderId(){
+      const rnd = Math.random().toString(16).slice(2, 8).toUpperCase();
+      const ts = Date.now().toString().slice(-6);
+      return `P${ts}-${rnd}`;
+    }
+    function setStatus(text){ $("status").textContent = text; }
+
+    function buildZapLink({ orderId, name, cpf, email, phone }) {
+      const total = price.toLocaleString("pt-BR", { style:"currency", currency:"BRL" });
+      const msg =
+`Olá! Eu acabei de fazer o pagamento do curso.
+
+📦 Produto: ${product}${offer ? " — " + offer : ""}
+💰 Valor: ${total}
+🧾 Pedido: ${orderId}
+
+👤 Nome: ${name}
+🪪 CPF: ${cpf}
+📧 E-mail: ${email}
+📱 WhatsApp: ${phone}
+
+Vou enviar o comprovante agora. Pode liberar meu acesso? ✅`;
+
+      const text = encodeURIComponent(msg);
+      return `https://wa.me/${SELLER.whatsappNumber}?text=${text}`;
+    }
+
+    $("btnShowPix").addEventListener("click", () => {
+      const name = $("name").value.trim();
+      const cpf = onlyDigits($("cpf").value);
+      const email = $("email").value.trim();
+      const phone = $("phone").value.trim();
+
+      if (name.length < 3) return showToast("Nome inválido");
+      if (cpf.length !== 11) return showToast("CPF inválido (11 dígitos)");
+      if (!validateEmail(email)) return showToast("E-mail inválido");
+      if (phone.length < 8) return showToast("WhatsApp inválido");
+
+      const orderId = makeOrderId();
+      $("orderId").textContent = orderId;
+
+      $("pixKey").textContent = SELLER.pixKey || "—";
+      $("pixCopiaCola").value = SELLER.pixCopyPaste || "";
+      setStatus("Aguardando pagamento");
+
+      // Monta link do WhatsApp com mensagem pronta
+      $("btnZap").href = buildZapLink({ orderId, name, cpf, email, phone });
+
+      // Salva pedido localmente (se quiser usar depois)
+      sessionStorage.setItem("order", JSON.stringify({
+        orderId, product, price, name, cpf, email, phone, createdAt: new Date().toISOString()
+      }));
+
+      $("pixArea").style.display = "block";
+      showToast("Pedido gerado ✅");
+    });
+
+    $("btnCopy").addEventListener("click", async () => {
+      const code = $("pixCopiaCola").value;
+      if (!code) return showToast("Sem código Pix (adicione o copia e cola)");
+      try{
+        await navigator.clipboard.writeText(code);
+        showToast("Código Pix copiado!");
+      }catch(e){
+        $("pixCopiaCola").select();
+        document.execCommand("copy");
+        showToast("Copiado!");
+      }
+    });
+
+    $("btnClear").addEventListener("click", () => {
+      ["name","cpf","email","phone"].forEach(id => $(id).value = "");
+      $("pixArea").style.display = "none";
+      $("orderId").textContent = "—";
+      setStatus("Aguardando cadastro");
+      sessionStorage.removeItem("order");
+      showToast("Limpo");
+    });
+  </script>
+</body>
+</html>
